@@ -4,6 +4,7 @@ import {
   Tooltip, ReferenceLine, ResponsiveContainer
 } from "recharts"
 import { MODELS, THRESHOLDS, ACCELERATION_STATS } from "../data/benchmarks"
+import BenchmarkHeatmap from "./BenchmarkHeatmap"
 
 type BenchmarkKey = "gpqa" | "mmlu" | "humaneval" | "swebench"
 
@@ -159,6 +160,9 @@ export default function FrontierWatch() {
           ))}
         </div>
       </div>
+
+      {/* Heatmap */}
+      <BenchmarkHeatmap />
 
       {/* Model table */}
       <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem" }}>
