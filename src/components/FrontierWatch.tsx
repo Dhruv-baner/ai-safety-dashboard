@@ -5,6 +5,7 @@ import {
 } from "recharts"
 import { MODELS, THRESHOLDS, ACCELERATION_STATS } from "../data/benchmarks"
 import BenchmarkHeatmap from "./BenchmarkHeatmap"
+import ThresholdProjection from "./ThresholdProjection"
 
 type BenchmarkKey = "gpqa" | "mmlu" | "humaneval" | "swebench"
 
@@ -79,7 +80,6 @@ export default function FrontierWatch() {
       <div style={{
         background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem"
       }}>
-        {/* Chart header + benchmark switcher */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem" }}>
           <div>
             <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
@@ -89,8 +89,6 @@ export default function FrontierWatch() {
               {meta.description} · Scores by model release date
             </p>
           </div>
-
-          {/* Benchmark toggle buttons */}
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {(Object.keys(BENCHMARK_META) as BenchmarkKey[]).map(b => (
               <button
@@ -124,17 +122,14 @@ export default function FrontierWatch() {
               tick={{ fill: "#6b7280", fontSize: 11, fontFamily: "Courier New" }}
               tickFormatter={(v: number) => `${v}%`} />
             <Tooltip content={<CustomTooltip />} />
-
             <ReferenceLine y={meta.humanLine} stroke="#f59e0b" strokeDasharray="6 3" label={{
               value: `${meta.humanLabel}: ${meta.humanLine}%`, fill: "#f59e0b",
               fontSize: 10, fontFamily: "Courier New", position: "insideTopLeft"
             }} />
-
             <ReferenceLine y={meta.dangerLine} stroke="#dc2626" strokeDasharray="4 2" label={{
               value: `Danger Threshold: ${meta.dangerLine}%`, fill: "#dc2626",
               fontSize: 10, fontFamily: "Courier New", position: "insideTopLeft"
             }} />
-
             <Line
               type="monotone" dataKey="score"
               stroke="#ef4444" strokeWidth={2}
@@ -150,7 +145,6 @@ export default function FrontierWatch() {
           </LineChart>
         </ResponsiveContainer>
 
-        {/* Legend */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
           {chartData.map(d => (
             <span key={d.name} style={{ fontSize: "0.7rem", color: "#9ca3af", display: "flex", alignItems: "center", gap: 5 }}>
@@ -165,7 +159,7 @@ export default function FrontierWatch() {
       <BenchmarkHeatmap />
 
       {/* Model table */}
-      <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem" }}>
+      <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem" }}>
         <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
           Model Comparison — All Benchmarks
         </h2>
@@ -219,6 +213,9 @@ export default function FrontierWatch() {
           <span style={{ fontSize: "0.7rem", color: "#d1d5db" }}>■ Below human expert</span>
         </div>
       </div>
+
+      {/* Threshold Projection */}
+      <ThresholdProjection />
 
     </div>
   )
