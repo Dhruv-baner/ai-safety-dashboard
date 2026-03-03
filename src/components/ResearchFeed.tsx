@@ -28,7 +28,7 @@ const SEARCH_QUERIES = [
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 async function fetchArxivQuery(query: string): Promise<Paper[]> {
-  const url = `https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(query)}&max_results=12&sortBy=submittedDate&sortOrder=descending`
+  const url = `/api/arxiv?q=${encodeURIComponent(query)}`
   const res = await fetch(url)
   if (!res.ok) return []
   const text = await res.text()
