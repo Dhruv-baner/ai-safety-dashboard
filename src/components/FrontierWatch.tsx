@@ -1,3 +1,4 @@
+import { useState } from "react"
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ReferenceLine, ResponsiveContainer
@@ -6,21 +7,22 @@ import { MODELS, THRESHOLDS, ACCELERATION_STATS } from "../data/benchmarks"
 
 type BenchmarkKey = "gpqa" | "mmlu" | "humaneval" | "swebench"
 
-const BENCHMARK_META: Record<BenchmarkKey, { label: string; description: string; humanLine: number; dangerLine: number }> = {
-  gpqa:      { label: "GPQA Diamond",    description: "PhD-level science reasoning", humanLine: THRESHOLDS.gpqa.humanExpert,      dangerLine: THRESHOLDS.gpqa.dangerous },
-  mmlu:      { label: "MMLU",            description: "57-subject knowledge",         humanLine: THRESHOLDS.mmlu.humanExpert,      dangerLine: THRESHOLDS.mmlu.dangerous },
-  humaneval: { label: "HumanEval",       description: "Python coding tasks",          humanLine: THRESHOLDS.humaneval.humanBaseline, dangerLine: THRESHOLDS.humaneval.dangerous },
-  swebench:  { label: "SWE-bench",       description: "Real GitHub bug fixing",       humanLine: THRESHOLDS.swebench.seniorDev,    dangerLine: THRESHOLDS.swebench.dangerous },
+const BENCHMARK_META: Record<BenchmarkKey, {
+  label: string; description: string; humanLine: number; dangerLine: number; humanLabel: string
+}> = {
+  gpqa:      { label: "GPQA Diamond",  description: "PhD-level science reasoning",  humanLine: THRESHOLDS.gpqa.humanExpert,        dangerLine: THRESHOLDS.gpqa.dangerous,      humanLabel: "PhD Expert Baseline" },
+  mmlu:      { label: "MMLU",          description: "57-subject knowledge test",    humanLine: THRESHOLDS.mmlu.humanExpert,        dangerLine: THRESHOLDS.mmlu.dangerous,      humanLabel: "Human Expert Baseline" },
+  humaneval: { label: "HumanEval",     description: "Python coding tasks",          humanLine: THRESHOLDS.humaneval.humanBaseline, dangerLine: THRESHOLDS.humaneval.dangerous,  humanLabel: "Human Baseline" },
+  swebench:  { label: "SWE-bench",     description: "Real GitHub bug fixing",       humanLine: THRESHOLDS.swebench.seniorDev,      dangerLine: THRESHOLDS.swebench.dangerous,  humanLabel: "Senior Dev Baseline" },
 }
 
-// Build chart data — one point per model sorted by release date
 function buildChartData(benchmark: BenchmarkKey) {
   return MODELS
     .filter(m => m.scores[benchmark] !== undefined)
     .sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime())
     .map(m => ({
       name: m.name,
-      date: m.releaseDate.slice(0, 7), // "YYYY-MM"
+      date: m.releaseDate.slice(0, 7),
       score: m.scores[benchmark],
       org: m.org,
       color: m.color,
@@ -43,7 +45,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 }
 
 export default function FrontierWatch() {
-  const activeBenchmark: BenchmarkKey = "gpqa"
+  const [activeBenchmark, setActiveBenchmark] = useState<BenchmarkKey>("gpqa")
   const meta = BENCHMARK_META[activeBenchmark]
   const chartData = buildChartData(activeBenchmark)
 
@@ -76,30 +78,57 @@ export default function FrontierWatch() {
       <div style={{
         background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem"
       }}>
-        <div style={{ marginBottom: "1rem" }}>
-          <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-            Capability Trajectory — {meta.label}
-          </h2>
-          <p style={{ color: "#6b7280", fontSize: "0.75rem", marginTop: "0.25rem" }}>
-            {meta.description} · Scores by model release date
-          </p>
+        {/* Chart header + benchmark switcher */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+          <div>
+            <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              Capability Trajectory — {meta.label}
+            </h2>
+            <p style={{ color: "#6b7280", fontSize: "0.75rem", marginTop: "0.25rem" }}>
+              {meta.description} · Scores by model release date
+            </p>
+          </div>
+
+          {/* Benchmark toggle buttons */}
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            {(Object.keys(BENCHMARK_META) as BenchmarkKey[]).map(b => (
+              <button
+                key={b}
+                onClick={() => setActiveBenchmark(b)}
+                style={{
+                  padding: "0.35rem 0.85rem",
+                  fontSize: "0.7rem",
+                  fontFamily: "Courier New",
+                  letterSpacing: "0.05em",
+                  cursor: "pointer",
+                  border: "1px solid",
+                  borderColor: activeBenchmark === b ? "#dc2626" : "#374151",
+                  background: activeBenchmark === b ? "#7f1d1d" : "transparent",
+                  color: activeBenchmark === b ? "#fee2e2" : "#9ca3af",
+                  transition: "all 0.15s",
+                }}
+              >
+                {BENCHMARK_META[b].label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <ResponsiveContainer width="100%" height={380}>
           <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis dataKey="date" stroke="#4b5563" tick={{ fill: "#6b7280", fontSize: 11, fontFamily: "Courier New" }} />
-            <YAxis domain={[20, 100]} stroke="#4b5563" tick={{ fill: "#6b7280", fontSize: 11, fontFamily: "Courier New" }}
+            <XAxis dataKey="date" stroke="#4b5563"
+              tick={{ fill: "#6b7280", fontSize: 11, fontFamily: "Courier New" }} />
+            <YAxis domain={[20, 100]} stroke="#4b5563"
+              tick={{ fill: "#6b7280", fontSize: 11, fontFamily: "Courier New" }}
               tickFormatter={(v: number) => `${v}%`} />
             <Tooltip content={<CustomTooltip />} />
 
-            {/* Human expert threshold */}
             <ReferenceLine y={meta.humanLine} stroke="#f59e0b" strokeDasharray="6 3" label={{
-              value: `Human Expert: ${meta.humanLine}%`, fill: "#f59e0b",
+              value: `${meta.humanLabel}: ${meta.humanLine}%`, fill: "#f59e0b",
               fontSize: 10, fontFamily: "Courier New", position: "insideTopLeft"
             }} />
 
-            {/* Danger threshold */}
             <ReferenceLine y={meta.dangerLine} stroke="#dc2626" strokeDasharray="4 2" label={{
               value: `Danger Threshold: ${meta.dangerLine}%`, fill: "#dc2626",
               fontSize: 10, fontFamily: "Courier New", position: "insideTopLeft"
@@ -119,6 +148,16 @@ export default function FrontierWatch() {
             />
           </LineChart>
         </ResponsiveContainer>
+
+        {/* Legend */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
+          {chartData.map(d => (
+            <span key={d.name} style={{ fontSize: "0.7rem", color: "#9ca3af", display: "flex", alignItems: "center", gap: 5 }}>
+              <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: d.color }} />
+              {d.name}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Model table */}
@@ -130,7 +169,10 @@ export default function FrontierWatch() {
           <thead>
             <tr style={{ borderBottom: "1px solid #1e293b" }}>
               {["Model", "Org", "Released", "GPQA ◆", "MMLU", "HumanEval", "SWE-bench"].map(h => (
-                <th key={h} style={{ color: "#6b7280", textAlign: "left", padding: "0.5rem 0.75rem", fontWeight: 400, textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.08em" }}>
+                <th key={h} style={{
+                  color: "#6b7280", textAlign: "left", padding: "0.5rem 0.75rem",
+                  fontWeight: 400, textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.08em"
+                }}>
                   {h}
                 </th>
               ))}
@@ -147,9 +189,12 @@ export default function FrontierWatch() {
                 <td style={{ padding: "0.6rem 0.75rem", color: "#9ca3af" }}>{m.releaseDate.slice(0, 7)}</td>
                 {(["gpqa", "mmlu", "humaneval", "swebench"] as BenchmarkKey[]).map(b => {
                   const score = m.scores[b]
-                  const threshold = THRESHOLDS[b].dangerous
-                  const isAboveDanger = score !== undefined && score >= threshold
-                  const isAboveHuman = score !== undefined && score >= (b === "gpqa" ? THRESHOLDS.gpqa.humanExpert : THRESHOLDS.mmlu.humanExpert)
+                  const isAboveDanger = score !== undefined && score >= THRESHOLDS[b].dangerous
+                  const isAboveHuman = score !== undefined && score >= (
+                    b === "gpqa" ? THRESHOLDS.gpqa.humanExpert :
+                    b === "swebench" ? THRESHOLDS.swebench.seniorDev :
+                    THRESHOLDS.mmlu.humanExpert
+                  )
                   return (
                     <td key={b} style={{
                       padding: "0.6rem 0.75rem",
@@ -170,6 +215,7 @@ export default function FrontierWatch() {
           <span style={{ fontSize: "0.7rem", color: "#d1d5db" }}>■ Below human expert</span>
         </div>
       </div>
+
     </div>
   )
 }
