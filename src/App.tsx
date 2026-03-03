@@ -1,4 +1,5 @@
 import { useState } from "react"
+import FrontierWatch from "./components/FrontierWatch"
 
 const NAV_ITEMS = [
   { id: "frontier", label: "Frontier Watch" },
@@ -10,27 +11,18 @@ export default function App() {
   const [active, setActive] = useState("frontier")
 
   return (
-    <div className="min-h-screen text-gray-100 font-mono" style={{backgroundColor: '#030712'}}>
-      {/* Header */}
-      <header className="border-b border-gray-800 px-8 py-4 flex items-center justify-between">
+    <div>
+      <header className="header">
         <div>
-          <h1 className="text-xl font-bold tracking-widest text-white uppercase">
-            AI Safety Dashboard
-          </h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Tracking capability trajectories & global regulation
-          </p>
+          <h1>AI Safety Dashboard</h1>
+          <p>Tracking capability trajectories & global regulation</p>
         </div>
-        <nav className="flex gap-1">
+        <nav className="nav">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => setActive(item.id)}
-              className={`px-4 py-2 text-sm tracking-wide transition-colors ${
-                active === item.id
-                  ? "bg-red-900 text-red-100 border border-red-700"
-                  : "text-gray-400 hover:text-white border border-transparent hover:border-gray-700"
-              }`}
+              className={`nav-btn ${active === item.id ? "active" : ""}`}
             >
               {item.label}
             </button>
@@ -38,20 +30,15 @@ export default function App() {
         </nav>
       </header>
 
-      {/* Main content */}
-      <main className="px-8 py-8">
-        {active === "frontier" && (
-          <div className="text-gray-400 text-sm">
-            — Frontier Watch coming soon —
-          </div>
-        )}
+      <main className="main">
+        {active === "frontier" && <FrontierWatch />}
         {active === "regulation" && (
-          <div className="text-gray-400 text-sm">
+          <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
             — Regulation Radar coming soon —
           </div>
         )}
         {active === "research" && (
-          <div className="text-gray-400 text-sm">
+          <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
             — Research Feed coming soon —
           </div>
         )}
