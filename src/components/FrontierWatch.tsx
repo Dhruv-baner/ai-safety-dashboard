@@ -52,7 +52,7 @@ export default function FrontierWatch() {
   const chartData = buildChartData(activeBenchmark)
 
   return (
-    <div style={{ fontFamily: "Courier New, monospace" }}>
+    <div style={{ fontFamily: "Inter, sans-serif" }}>
 
       {/* Stat blocks */}
       <div style={{
@@ -83,7 +83,7 @@ export default function FrontierWatch() {
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem" }}>
           <div>
             <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              Capability Trajectory — {meta.label}
+              Capability Trajectory: {meta.label}
             </h2>
             <p style={{ color: "#6b7280", fontSize: "0.75rem", marginTop: "0.25rem" }}>
               {meta.description} · Scores by model release date
@@ -161,7 +161,7 @@ export default function FrontierWatch() {
       {/* Model table */}
       <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem" }}>
         <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
-          Model Comparison — All Benchmarks
+          Model Comparison: All Benchmarks
         </h2>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem" }}>
           <thead>

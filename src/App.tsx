@@ -1,6 +1,7 @@
 import { useState } from "react"
 import FrontierWatch from "./components/FrontierWatch"
 import ResearchFeed from "./components/ResearchFeed"
+import RegulationRadar from "./components/RegulationRadar"
 
 const NAV_ITEMS = [
   { id: "frontier", label: "Frontier Watch" },
@@ -33,11 +34,7 @@ export default function App() {
 
       <main className="main">
         {active === "frontier" && <FrontierWatch />}
-        {active === "regulation" && (
-          <div style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-            — Regulation Radar coming soon —
-          </div>
-        )}
+        {active === "regulation" && <RegulationRadar />}
         {active === "research" && <ResearchFeed />}
       </main>
     </div>

@@ -7,8 +7,14 @@
 body {
   background-color: #030712;
   color: #f1f5f9;
-  font-family: 'Courier New', monospace;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Use JetBrains Mono for data/numbers, Inter for labels */
+.mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 
 .header {
@@ -20,17 +26,19 @@ body {
 }
 
 .header h1 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: white;
+  font-family: 'Inter', sans-serif;
 }
 
 .header p {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #6b7280;
-  margin-top: 0.25rem;
+  margin-top: 0.2rem;
+  font-weight: 400;
 }
 
 .nav {
@@ -40,13 +48,14 @@ body {
 
 .nav-btn {
   padding: 0.4rem 1rem;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   background: none;
   border: 1px solid transparent;
   color: #9ca3af;
   cursor: pointer;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.05em;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.03em;
   transition: all 0.15s;
 }
 
