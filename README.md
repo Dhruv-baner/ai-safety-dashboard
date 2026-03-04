@@ -1,10 +1,8 @@
 # AI Safety Dashboard
 
-**[→ Live Demo](https://ai-safety-dashboard-eight.vercel.app/)** · Built for the AI safety community · March 2026
+### **[Live Demo](https://ai-safety-dashboard-eight.vercel.app/)** · Built for the AI safety community · March 2026
 
 An open-source intelligence dashboard tracking the three dimensions of the AI safety landscape: the **research literature**, **frontier model capabilities**, and **global governance**. Built as a resource for policy researchers, safety advocates, and anyone seeking a structured view of where AI development stands and how the world is responding.
-
-The platform is framed around [ControlAI's Direct Institutional Plan](https://controlai.com/dip): the concrete policy roadmap for preventing ASI development supported by 100+ UK parliamentarians — and uses it as a benchmark for evaluating national regulatory alignment.
 
 ---
 
@@ -37,7 +35,7 @@ An interactive world map of AI regulatory stances across **~80 countries**, with
 - Per-country profiles showing: horizontal AI law, frontier model rules, compute thresholds, mandatory safety evaluations, and AI Safety Institute presence
 - **DIP Alignment Score** (Yes / Partial / No) measuring each country's proximity to ControlAI's four core policy asks
 - AI Safety Institute network showcase tracking all 11 government-backed frontier evaluation bodies
-- Full country matrix with region filters — G20 (default), Europe, Asia, Americas, Africa, Middle East, Oceania
+- Full country matrix with region filters: G20 (default), Europe, Asia, Americas, Africa, Middle East, Oceania
 
 ---
 
@@ -52,7 +50,7 @@ An interactive world map of AI regulatory stances across **~80 countries**, with
 | Deployment | Vercel |
 | Data | Hand-curated TypeScript data files |
 
-The project is deliberately built without a backend — all data lives in typed `.ts` files, making it fully auditable, forkable, and straightforward to update as the field evolves.
+The project is deliberately built without a backend; all data lives in typed `.ts` files, making it fully auditable, forkable, and straightforward to update.
 
 ---
 
@@ -76,11 +74,11 @@ src/
 
 ## Data Sources & Methodology
 
-**Research corpus** — Papers verified against arXiv, official government websites, transformer-circuits.pub, and major academic databases. No fabricated entries. Citation counts from Google Scholar, January 2026.
+**Research corpus**: Papers verified against arXiv, official government websites, transformer-circuits.pub, and major academic databases. No fabricated entries. Citation counts from Google Scholar, January 2026.
 
-**Benchmark data** — Model scores sourced from official technical reports and system cards. Thresholds set at published human expert baselines (GPQA Diamond: 69.7% PhD expert; SWE-bench: 40% senior developer performance).
+**Benchmark data**: Model scores sourced from official technical reports and system cards. Thresholds set at published human expert baselines (GPQA Diamond: 69.7% PhD expert; SWE-bench: 40% senior developer performance).
 
-**Regulatory classification** — Country stances verified against the EU AI Act official timeline, White & Case Global AI Regulatory Tracker, IAPP Global AI Law Tracker, Asia Law Portal 2026, and the International AI Safety Report 2026. DIP alignment assessed against ControlAI's four core policy asks: banning deliberate ASI development, prohibiting dangerous capability precursors, mandatory pre-deployment safety evaluations, and building toward an international treaty.
+**Regulatory classification**: Country stances verified against the EU AI Act official timeline, White & Case Global AI Regulatory Tracker, IAPP Global AI Law Tracker, Asia Law Portal 2026, and the International AI Safety Report 2026. DIP alignment assessed against ControlAI's four core policy asks: banning deliberate ASI development, prohibiting dangerous capability precursors, mandatory pre-deployment safety evaluations, and building toward an international treaty.
 
 ---
 
@@ -105,6 +103,6 @@ If you spot an error in a regulatory classification or a missing paper, open an 
 
 ## About
 
-Built by **Dhruv Banerjee** — MSc Data Science, London School of Economics. Developed as part of a portfolio of AI safety and investment intelligence tools.
+Built by **Dhruv Banerjee**: MSc Data Science, London School of Economics. Developed as part of a portfolio of AI safety and investment intelligence tools.
 
 *Data current as of March 2026. The field moves fast; contributions welcome.*
