@@ -4,9 +4,9 @@ import ResearchFeed from "./components/ResearchFeed"
 import RegulationRadar from "./components/RegulationRadar"
 
 const NAV_ITEMS = [
-  { id: "frontier", label: "Frontier Watch" },
-  { id: "regulation", label: "Regulation Radar" },
-  { id: "research", label: "Research Feed" },
+  { id: "frontier", label: "Frontier Safety" },
+  { id: "regulation", label: "Regulation Tracker" },
+  { id: "research", label: "AI Safety Research" },
 ]
 
 export default function App() {

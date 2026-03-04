@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import React, { useState, useMemo } from "react"
 import { PAPERS, SPOTLIGHT_ITEMS, TAG_COLORS, type TagType } from "../data/researchSeeds"
 
 const TAGS = Object.keys(TAG_COLORS) as TagType[]
@@ -25,7 +25,7 @@ export default function ResearchFeed() {
   const [activeTag, setActiveTag] = useState<TagType | "All">("All")
   const [search, setSearch] = useState("")
   const [expanded, setExpanded] = useState<string | null>(null)
-  const [sort, setSort] = useState<SortMode>("citations")
+  const [sort, setSort] = useState<SortMode>("date")
   const [tab, setTab] = useState<TabMode>("all")
 
   const recentPapers = PAPERS.filter(p => p.isRecent)
@@ -60,13 +60,23 @@ export default function ResearchFeed() {
   return (
     <div style={{ fontFamily: "Inter, sans-serif" }}>
 
+      {/* Description */}
+      <div style={{ marginBottom: "2rem", borderLeft: "3px solid #7c3aed", paddingLeft: "1rem" }}>
+        <div style={{ color: "#c4b5fd", fontSize: "0.65rem", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "0.4rem" }}>
+          Research Feed on AI Safety
+        </div>
+        <p style={{ color: "#94a3b8", fontSize: "0.82rem", lineHeight: 1.7, margin: 0 }}>
+          A comprehensive and meticulously curated corpus of foundattional and frontier literature on AI Safety
+        </p>
+      </div>
+
       {/* Stat blocks */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2rem" }}>
         {[
-          { label: "Curated Papers", value: PAPERS.length, sub: "Verified, AI safety relevant", delta: `${recentPapers.length} from 2025–2026`, color: "#7c3aed" },
-          { label: "Total Citations", value: totalCitations.toLocaleString(), sub: "Across all papers", delta: "Google Scholar, Jan 2026", color: "#1d4ed8" },
-          { label: "Most Cited", value: mostCited.citations.toLocaleString(), sub: mostCited.title.slice(0, 35) + "…", delta: mostCited.authors[0], color: "#f59e0b" },
-          { label: "Spotlight Events", value: SPOTLIGHT_ITEMS.length, sub: "Declarations, reports, summits", delta: "Verified primary sources", color: "#dc2626" },
+          { label: "Curated Papers",  value: PAPERS.length,                  sub: "Verified, AI safety relevant",    delta: `${recentPapers.length} from 2025–2026`,  color: "#7c3aed" },
+          { label: "Total Citations", value: totalCitations.toLocaleString(), sub: "Across all papers",               delta: "Google Scholar, Jan 2026",              color: "#1d4ed8" },
+          { label: "Most Cited",      value: mostCited.citations.toLocaleString(), sub: mostCited.title.slice(0, 35) + "…", delta: mostCited.authors[0],             color: "#f59e0b" },
+          { label: "Spotlight Events",value: SPOTLIGHT_ITEMS.length,         sub: "Declarations, reports, summits",  delta: "Verified primary sources",              color: "#dc2626" },
         ].map((s, i) => (
           <div key={i} style={{ ...S.card, borderLeft: `3px solid ${s.color}` }}>
             <div style={S.label}>{s.label}</div>
@@ -154,7 +164,7 @@ export default function ResearchFeed() {
                   style={{
                     background: "#0a0f1a", border: "1px solid #374151", color: "#f1f5f9",
                     padding: "0.3rem 0.75rem", fontSize: "0.75rem", fontFamily: "Inter, sans-serif",
-                    outline: "none", width: 210,
+                    outline: "none", width: "min(210px, 100%)",
                   }} />
                 <div style={{ display: "flex", gap: "0.3rem", marginLeft: "0.25rem" }}>
                   {["citations", "date"].map(s => (
@@ -244,6 +254,33 @@ export default function ResearchFeed() {
 
         {/* Right sidebar */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+
+          {/* Spotlight preview */}
+          <div style={S.card}>
+            <div style={{ ...S.label, marginBottom: "0.875rem" }}>Latest Spotlight</div>
+            {SPOTLIGHT_ITEMS.slice(-3).reverse().map(item => {
+              const colors = SPOTLIGHT_COLORS[item.type] || SPOTLIGHT_COLORS.Framework
+              return (
+                <div key={item.id} style={{ marginBottom: "0.65rem", paddingBottom: "0.65rem", borderBottom: "1px solid #1e293b", cursor: "pointer" }}
+                  onClick={() => setTab("spotlight")}>
+                  <div style={{ fontSize: "0.6rem", padding: "0.1rem 0.4rem", background: colors.bg, color: colors.text, border: `1px solid ${colors.border}`, display: "inline-block", marginBottom: "0.3rem" }}>
+                    {item.type}
+                  </div>
+                  <div style={{ color: "#f1f5f9", fontSize: "0.72rem", fontWeight: 600, lineHeight: 1.4 }}>
+                    {item.title.slice(0, 55)}{item.title.length > 55 ? "…" : ""}
+                  </div>
+                  <div style={{ color: "#4b5563", fontSize: "0.62rem", fontFamily: "JetBrains Mono, monospace", marginTop: 2 }}>{item.date}</div>
+                </div>
+              )
+            })}
+            <button onClick={() => setTab("spotlight")} style={{
+              marginTop: "0.25rem", background: "none", border: "1px solid #374151",
+              color: "#6b7280", fontSize: "0.68rem", fontFamily: "Inter, sans-serif",
+              padding: "0.3rem 0.75rem", cursor: "pointer", width: "100%",
+            }}>
+              View all {SPOTLIGHT_ITEMS.length} spotlight events →
+            </button>
+          </div>
 
           {/* Category breakdown */}
           <div style={S.card}>
@@ -346,6 +383,7 @@ export default function ResearchFeed() {
               All papers manually curated for AI safety relevance. Citations from Google Scholar, January 2026. Spotlight events sourced from primary documents and official government publications.
             </div>
           </div>
+
         </div>
       </div>
     </div>

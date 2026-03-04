@@ -54,11 +54,50 @@ export default function FrontierWatch() {
   return (
     <div style={{ fontFamily: "Inter, sans-serif" }}>
 
+      <style>{`
+        .fw-stat-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+        .fw-chart-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          margin-bottom: 1.25rem;
+          gap: 1rem;
+        }
+        .fw-bench-buttons {
+          display: flex;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+        .fw-table-wrap {
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        @media (max-width: 768px) {
+          .fw-stat-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .fw-chart-header {
+            flex-direction: column;
+          }
+          .fw-bench-buttons {
+            justify-content: flex-start;
+          }
+        }
+        @media (max-width: 480px) {
+          .fw-stat-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
       {/* Stat blocks */}
-      <div style={{
-        display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
-        gap: "1rem", marginBottom: "2rem"
-      }}>
+      <div className="fw-stat-grid">
         {ACCELERATION_STATS.map((s, i) => (
           <div key={i} style={{
             background: "#0f172a", border: "1px solid #1e3a5f",
@@ -77,10 +116,8 @@ export default function FrontierWatch() {
       </div>
 
       {/* Main chart */}
-      <div style={{
-        background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem"
-      }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+      <div style={{ background: "#0f172a", border: "1px solid #1e293b", padding: "1.5rem", marginBottom: "2rem" }}>
+        <div className="fw-chart-header">
           <div>
             <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
               Capability Trajectory: {meta.label}
@@ -89,7 +126,7 @@ export default function FrontierWatch() {
               {meta.description} · Scores by model release date
             </p>
           </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
+          <div className="fw-bench-buttons">
             {(Object.keys(BENCHMARK_META) as BenchmarkKey[]).map(b => (
               <button
                 key={b}
@@ -163,51 +200,53 @@ export default function FrontierWatch() {
         <h2 style={{ color: "#f1f5f9", fontSize: "0.95rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: "1rem" }}>
           Model Comparison: All Benchmarks
         </h2>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem" }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid #1e293b" }}>
-              {["Model", "Org", "Released", "GPQA ◆", "MMLU", "HumanEval", "SWE-bench"].map(h => (
-                <th key={h} style={{
-                  color: "#6b7280", textAlign: "left", padding: "0.5rem 0.75rem",
-                  fontWeight: 400, textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.08em"
-                }}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {[...MODELS].sort((a, b) => (b.scores.gpqa ?? 0) - (a.scores.gpqa ?? 0)).map((m, i) => (
-              <tr key={m.id} style={{ borderBottom: "1px solid #0f172a", background: i % 2 === 0 ? "#111827" : "transparent" }}>
-                <td style={{ padding: "0.6rem 0.75rem", color: "#f1f5f9", fontWeight: 600 }}>
-                  <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: m.color, marginRight: 8 }} />
-                  {m.name}
-                </td>
-                <td style={{ padding: "0.6rem 0.75rem", color: "#9ca3af" }}>{m.org}</td>
-                <td style={{ padding: "0.6rem 0.75rem", color: "#9ca3af" }}>{m.releaseDate.slice(0, 7)}</td>
-                {(["gpqa", "mmlu", "humaneval", "swebench"] as BenchmarkKey[]).map(b => {
-                  const score = m.scores[b]
-                  const isAboveDanger = score !== undefined && score >= THRESHOLDS[b].dangerous
-                  const isAboveHuman = score !== undefined && score >= (
-                    b === "gpqa" ? THRESHOLDS.gpqa.humanExpert :
-                    b === "swebench" ? THRESHOLDS.swebench.seniorDev :
-                    THRESHOLDS.mmlu.humanExpert
-                  )
-                  return (
-                    <td key={b} style={{
-                      padding: "0.6rem 0.75rem",
-                      color: isAboveDanger ? "#ef4444" : isAboveHuman ? "#f59e0b" : "#d1d5db",
-                      fontWeight: isAboveDanger ? 700 : 400
-                    }}>
-                      {score !== undefined ? `${score}%` : "—"}
-                    </td>
-                  )
-                })}
+        <div className="fw-table-wrap">
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8rem", minWidth: 600 }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid #1e293b" }}>
+                {["Model", "Org", "Released", "GPQA ◆", "MMLU", "HumanEval", "SWE-bench"].map(h => (
+                  <th key={h} style={{
+                    color: "#6b7280", textAlign: "left", padding: "0.5rem 0.75rem",
+                    fontWeight: 400, textTransform: "uppercase", fontSize: "0.65rem", letterSpacing: "0.08em"
+                  }}>
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: "0.75rem", display: "flex", gap: "1.5rem" }}>
+            </thead>
+            <tbody>
+              {[...MODELS].sort((a, b) => (b.scores.gpqa ?? 0) - (a.scores.gpqa ?? 0)).map((m, i) => (
+                <tr key={m.id} style={{ borderBottom: "1px solid #0f172a", background: i % 2 === 0 ? "#111827" : "transparent" }}>
+                  <td style={{ padding: "0.6rem 0.75rem", color: "#f1f5f9", fontWeight: 600 }}>
+                    <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: m.color, marginRight: 8 }} />
+                    {m.name}
+                  </td>
+                  <td style={{ padding: "0.6rem 0.75rem", color: "#9ca3af" }}>{m.org}</td>
+                  <td style={{ padding: "0.6rem 0.75rem", color: "#9ca3af" }}>{m.releaseDate.slice(0, 7)}</td>
+                  {(["gpqa", "mmlu", "humaneval", "swebench"] as BenchmarkKey[]).map(b => {
+                    const score = m.scores[b]
+                    const isAboveDanger = score !== undefined && score >= THRESHOLDS[b].dangerous
+                    const isAboveHuman = score !== undefined && score >= (
+                      b === "gpqa" ? THRESHOLDS.gpqa.humanExpert :
+                      b === "swebench" ? THRESHOLDS.swebench.seniorDev :
+                      THRESHOLDS.mmlu.humanExpert
+                    )
+                    return (
+                      <td key={b} style={{
+                        padding: "0.6rem 0.75rem",
+                        color: isAboveDanger ? "#ef4444" : isAboveHuman ? "#f59e0b" : "#d1d5db",
+                        fontWeight: isAboveDanger ? 700 : 400
+                      }}>
+                        {score !== undefined ? `${score}%` : "—"}
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{ marginTop: "0.75rem", display: "flex", flexWrap: "wrap", gap: "1.5rem" }}>
           <span style={{ fontSize: "0.7rem", color: "#ef4444" }}>■ Above danger threshold</span>
           <span style={{ fontSize: "0.7rem", color: "#f59e0b" }}>■ Above human expert</span>
           <span style={{ fontSize: "0.7rem", color: "#d1d5db" }}>■ Below human expert</span>
